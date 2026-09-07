@@ -6,8 +6,8 @@
 
 [![npm](https://img.shields.io/npm/v/crxtrace?color=0b7285)](https://www.npmjs.com/package/crxtrace)
 [![CI](https://github.com/sabbir-offc/crxtrace/actions/workflows/ci.yml/badge.svg)](https://github.com/sabbir-offc/crxtrace/actions/workflows/ci.yml)
-[![license](https://img.shields.io/npm/l/crxtrace?color=0b7285)](LICENSE)
-[![bundle](https://img.shields.io/bundlephobia/minzip/crxtrace?color=0b7285)](https://bundlephobia.com/package/crxtrace)
+[![license MIT](https://img.shields.io/badge/license-MIT-0b7285)](LICENSE)
+[![bundle size](https://img.shields.io/bundlejs/size/crxtrace?color=0b7285&label=gzipped)](https://bundlejs.com/?q=crxtrace)
 
 **[Documentation](https://crxtrace.dev)** ·
 [Getting started](https://crxtrace.dev/getting-started/) ·
