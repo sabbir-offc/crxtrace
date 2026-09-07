@@ -1,0 +1,17 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "crxtrace",
+  "compatibility_date": "2026-09-07",
+
+  // Static-only: there is no `main` Worker script. Astro builds a fully static
+  // site into docs/dist and Cloudflare serves those files directly.
+  "assets": {
+    "directory": "./dist",
+
+    // Serve the nearest 404.html for unmatched paths. The default would be
+    // "single-page-application", which answers 200 with index.html for every
+    // miss — that turns a typo'd docs URL into the homepage and lets search
+    // engines index infinite duplicates of it.
+    "not_found_handling": "404-page"
+  }
+}

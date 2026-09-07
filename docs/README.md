@@ -67,18 +67,44 @@ the SDK, these need updating in the same PR:
 
 ## Deployment
 
-Cloudflare Pages builds from `main` on push. Project settings:
+Deployed to **Cloudflare Workers** with
+[static assets](https://developers.cloudflare.com/workers/static-assets/),
+built from `main` on push.
+
+Configuration lives in [`wrangler.jsonc`](wrangler.jsonc). It is a static-only
+Worker — there is no `main` entrypoint, because Astro emits a fully static site
+and Cloudflare serves those files directly.
+
+`not_found_handling` is set to `404-page` rather than the
+`single-page-application` default. The default answers `200` with `index.html`
+for every unmatched path, which would turn a mistyped docs URL into the
+homepage and let search engines index endless duplicates of it.
+
+### Cloudflare build settings
 
 | Setting | Value |
 | --- | --- |
-| Framework preset | Astro |
 | Build command | `npm run build` |
-| Build output directory | `dist` |
-| Root directory | `docs` |
-| Node version | 20 or later |
+| Deploy command | `npx wrangler deploy` |
+| **Root directory** | **`docs`** |
 
-**Root directory must be `docs`** — otherwise Cloudflare builds the SDK at the
-repository root and deploys a bundle instead of a website.
+**Root directory must be `docs`** (it's under *Advanced settings* when creating
+the project). Left blank, Cloudflare builds the SDK at the repository root and
+deploys that instead of the website.
 
-The custom domain (`crxtrace.dev`) is configured under the Pages project's
-*Custom domains* tab.
+### Deploying by hand
+
+```bash
+cd docs
+npx wrangler login
+npm run deploy          # builds, then deploys
+```
+
+Validate the config without deploying:
+
+```bash
+npx wrangler deploy --dry-run
+```
+
+The custom domain (`crxtrace.dev`) is configured on the Worker under
+*Settings → Domains & Routes*.
