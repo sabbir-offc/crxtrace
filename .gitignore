@@ -10,6 +10,9 @@ dist/
 # astro (docs site)
 .astro/
 
+# wrangler local state
+.wrangler/
+
 # the SDK bundle copied in by `npm run demo:sync`
 examples/demo-extension/vendor/
 
