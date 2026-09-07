@@ -1,0 +1,23 @@
+# Normalize everything to LF in the repository, regardless of the contributor's
+# platform. The CI workflows run bash with `set -euo pipefail`; a CRLF in one
+# of those scripts fails with `$'\r': command not found`.
+* text=auto eol=lf
+
+# Explicitly LF — these are read by shells, CI, or Chrome.
+*.sh        text eol=lf
+*.yml       text eol=lf
+*.yaml      text eol=lf
+*.json      text eol=lf
+*.ts        text eol=lf
+*.js        text eol=lf
+*.mjs       text eol=lf
+*.cjs       text eol=lf
+*.md        text eol=lf
+*.html      text eol=lf
+
+# Keep generated build output and lockfiles out of diffs and language stats.
+package-lock.json   linguist-generated=true -diff
+dist/**             linguist-generated=true
+
+# The demo extension is documentation, not the library.
+examples/**         linguist-documentation=true

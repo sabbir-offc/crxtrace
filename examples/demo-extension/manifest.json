@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "CrxTrace Demo",
+  "version": "1.0.0",
+  "description": "Triggers the MV3 failure modes CrxTrace is built to catch.",
+  "permissions": ["storage", "alarms"],
+  "_comment_host_permissions": "Match patterns ignore the port, so this covers the demo ingest server on 8787 and the dashboard on 3000.",
+  "host_permissions": ["http://localhost/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["config.js", "vendor/crxtrace.global.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

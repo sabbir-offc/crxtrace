@@ -1,0 +1,66 @@
+{
+  "name": "crxtrace",
+  "version": "0.1.0",
+  "description": "MV3-aware error tracking for Chrome extensions. Service worker lifecycle, content script errors by host, and release health.",
+  "license": "MIT",
+  "author": "sabbir-offc (https://github.com/sabbir-offc)",
+  "homepage": "https://github.com/sabbir-offc/crxtrace#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sabbir-offc/crxtrace.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sabbir-offc/crxtrace/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./global": "./dist/crxtrace.global.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=20"
+  },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "chrome-extension",
+    "manifest-v3",
+    "mv3",
+    "error-tracking",
+    "service-worker",
+    "content-script",
+    "crash-reporting",
+    "observability",
+    "browser-extension"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "demo:sync": "npm run build && node -e \"const f=require('fs');f.mkdirSync('examples/demo-extension/vendor',{recursive:true});f.copyFileSync('dist/crxtrace.global.js','examples/demo-extension/vendor/crxtrace.global.js')\"",
+    "demo:ingest": "node examples/ingest-server.mjs",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.10"
+  }
+}

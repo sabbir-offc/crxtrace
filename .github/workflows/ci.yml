@@ -1,0 +1,74 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# Cancel superseded runs on the same branch/PR.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: test (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ["20", "22", "24"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Test
+        run: npm test
+
+  build:
+    name: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      # The IIFE build is what no-bundler extensions load via importScripts().
+      # A rename of the tsup entry or globalName silently breaks them, and
+      # nothing else in the test suite would catch it.
+      - name: Verify build output
+        run: |
+          set -euo pipefail
+          test -f dist/index.js    || { echo "missing ESM build";  exit 1; }
+          test -f dist/index.cjs   || { echo "missing CJS build";  exit 1; }
+          test -f dist/index.d.ts  || { echo "missing types";      exit 1; }
+          test -f dist/crxtrace.global.js || { echo "missing IIFE build"; exit 1; }
+          grep -q 'var CrxTrace=' dist/crxtrace.global.js \
+            || { echo "IIFE does not expose the CrxTrace global"; exit 1; }
+
+      # Catches a broken "files" list or a bad exports map before publish,
+      # not after.
+      - name: Verify publishable package
+        run: npm pack --dry-run

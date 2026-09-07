@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        width: 260px;
+        margin: 0;
+        padding: 14px;
+        font: 13px/1.45 system-ui, sans-serif;
+        background: #0f1115;
+        color: #e6e8ee;
+      }
+      h1 {
+        margin: 0 0 2px;
+        font-size: 14px;
+      }
+      p {
+        margin: 0 0 12px;
+        color: #8b91a1;
+        font-size: 11px;
+      }
+      button {
+        display: block;
+        width: 100%;
+        margin-bottom: 6px;
+        padding: 8px 10px;
+        text-align: left;
+        border: 1px solid #262b36;
+        border-radius: 6px;
+        background: #171a21;
+        color: #e6e8ee;
+        font: inherit;
+        cursor: pointer;
+      }
+      button:hover {
+        border-color: #3d4453;
+      }
+      #status {
+        margin-top: 10px;
+        min-height: 28px;
+        color: #6ee7a8;
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>CrxTrace demo</h1>
+    <p>Watch the ingest server terminal.</p>
+
+    <button data-action="throw">Throw in service worker</button>
+    <button data-action="reject">Unhandled promise rejection</button>
+    <button data-action="noReceiver">sendMessage with no receiver</button>
+    <button data-action="storageQuota">Storage quota exceeded</button>
+    <button data-action="handled">Handled error (captureException)</button>
+    <button data-action="hang">Start task, then let worker die</button>
+
+    <div id="status"></div>
+    <script src="config.js"></script>
+    <script src="vendor/crxtrace.global.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

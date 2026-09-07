@@ -1,0 +1,107 @@
+name: Bug report
+description: Something in the SDK behaves incorrectly
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. The MV3 context matters a lot here — an error
+        that only happens in a content script, or only on a store build, is a
+        different bug from one that happens everywhere.
+
+        **Do not include a real DSN, API key, or unredacted user data.**
+        For a security issue, use
+        [private reporting](https://github.com/sabbir-offc/crxtrace/security/advisories/new)
+        instead of this form.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you expected, and what you got instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: >
+        A minimal extension is ideal. If you can reproduce it with
+        `examples/demo-extension`, say what you changed.
+      placeholder: |
+        1. init() in the service worker with …
+        2. Trigger …
+        3. Observe …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Which surface?
+      multiple: true
+      options:
+        - service worker
+        - content script
+        - popup
+        - options page
+        - side panel
+        - devtools
+        - offscreen document
+        - not sure
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: How is the extension loaded?
+      description: >
+        Store builds get an `update_url` in the manifest and unpacked ones
+        don't — which is how the SDK decides `environment`.
+      options:
+        - Unpacked (developer mode)
+        - Installed from the Chrome Web Store
+        - Installed from the Edge Add-ons store
+        - Other / packaged CRX
+    validations:
+      required: true
+
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      placeholder: "crxtrace 0.1.0, Chrome 141, Windows 11"
+    validations:
+      required: true
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Your init() options
+      description: Redact the DSN. This is rendered as JS, no backticks needed.
+      render: js
+      placeholder: |
+        CrxTrace.init({
+          dsn: "https://<redacted>",
+          sampleRate: 1,
+        });
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Debug output
+      description: >
+        Output with `debug: true` set, if you have it. Redact anything
+        sensitive.
+      render: shell
+
+  - type: checkboxes
+    id: permissions
+    attributes:
+      label: Manifest permissions
+      options:
+        - label: My manifest includes the `storage` permission
+        - label: My manifest includes the `alarms` permission
+        - label: My ingest origin is in `host_permissions`

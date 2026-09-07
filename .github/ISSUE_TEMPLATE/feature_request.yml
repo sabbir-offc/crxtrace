@@ -1,0 +1,50 @@
+name: Feature request
+description: Suggest a capability the SDK doesn't have
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This library stays deliberately small — it ships inside other people's
+        extensions, so every addition costs them bytes. The strongest requests
+        describe a real failure you hit, not a feature another tracker has.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you hitting?
+      description: >
+        What went wrong in your extension that CrxTrace didn't help with?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like it to do?
+      description: An API sketch is welcome but not required.
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: What are you doing instead today?
+      description: >
+        `beforeSend`, `captureMessage`, and `setContext` cover a lot. If one of
+        them nearly works, say where it falls short.
+
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: Would this cause more data to leave the browser?
+      description: >
+        If yes, it will almost certainly need to be opt-in. That's not a
+        rejection — it just shapes the design.
+      options:
+        - "No"
+        - "Yes, but only when explicitly enabled"
+        - "Yes, by default"
+        - Not sure
+    validations:
+      required: true
