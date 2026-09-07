@@ -4,7 +4,6 @@
   --sl-color-accent-low: #0b2e2e;
   --sl-color-accent: #0d7a72;
   --sl-color-accent-high: #8fd9d1;
-  --sl-color-white: #ffffff;
 }
 
 :root[data-theme="light"] {
@@ -13,21 +12,30 @@
   --sl-color-accent-high: #06322e;
 }
 
-/* The docs lean on tables for option and category references. Starlight's
-   defaults let long cells collapse awkwardly on mobile, so keep them scrollable
-   rather than squeezed. */
+/* These docs lean on wide reference tables — options, MV3 categories, envelope
+   fields. `fixed` makes columns share the available width instead of sizing to
+   their content, which is what stops a long error message in a cell from
+   pushing the last column off the page. */
 .sl-markdown-content table {
-  display: block;
-  overflow-x: auto;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.sl-markdown-content :is(th, td) {
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+
+/* Inline code in a table must wrap too. The MV3 category table quotes real
+   Chrome messages ("Could not establish connection. Receiving end does not
+   exist."), and keeping those on one line is what broke the layout. */
+.sl-markdown-content :is(th, td) code {
   white-space: normal;
+  overflow-wrap: anywhere;
 }
 
-.sl-markdown-content table code {
-  white-space: nowrap;
-}
-
-/* Terminal transcripts in the worker-death guide read better without the
-   code-block chrome fighting the ASCII. */
+/* Terminal transcripts in the worker-death guide read better with a little
+   more room between lines. */
 .sl-markdown-content pre {
   line-height: 1.55;
 }

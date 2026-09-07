@@ -2,6 +2,11 @@
 title: CrxTrace
 description: MV3-aware error tracking for Chrome extensions. Events survive service worker death, content script errors group by host, and track() names the task that died.
 template: splash
+# Starlight appends the site title, which would render "CrxTrace | CrxTrace" in
+# the tab and in search results. Override the whole tag on the landing page.
+head:
+  - tag: title
+    content: CrxTrace — MV3-aware error tracking for Chrome extensions
 hero:
   tagline: Error tracking that understands Manifest V3. Your extension breaks on someone else's computer, on a website you don't control, and you find out from a one-star review a week later. CrxTrace tells you in an hour.
   actions:
