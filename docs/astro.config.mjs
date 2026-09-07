@@ -32,6 +32,11 @@ export default defineConfig({
           items: [
             { label: "Getting started", slug: "getting-started" },
             { label: "Migrating from Sentry", slug: "migrating-from-sentry" },
+            {
+              label: "Hosted dashboard",
+              link: "https://app.crxtrace.dev",
+              attrs: { target: "_blank", rel: "noopener noreferrer" },
+            },
           ],
         },
         {

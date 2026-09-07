@@ -13,6 +13,29 @@ No bundler? Grab the single-file IIFE build from
 `node_modules/crxtrace/dist/crxtrace.global.js` and see
 [Without a bundler](#without-a-bundler) below.
 
+## Get a DSN
+
+The `dsn` is the endpoint your events are sent to. Two ways to get one:
+
+**Use the hosted dashboard.** Sign up at
+[app.crxtrace.dev](https://app.crxtrace.dev), create a project, and the setup
+page hands you a DSN that looks like:
+
+```
+https://app.crxtrace.dev/api/ingest/pk_live_...
+```
+
+It's safe to ship inside your extension bundle — it only allows writing events,
+never reading them.
+
+**Or run your own.** The SDK works against any server that accepts the
+[envelope](/reference/envelope/) and answers `2xx`. A complete receiver in ~150
+lines of dependency-free Node ships in the repo, and
+[self-hosting](/reference/self-hosting/) covers storage, grouping and retention.
+
+Either way the rest of this page is identical — nothing below depends on which
+you chose.
+
 ## Manifest permissions
 
 ```json title="manifest.json"
