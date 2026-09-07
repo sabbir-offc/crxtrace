@@ -17,6 +17,15 @@ name: Release
 #
 # Renaming this file, or moving the publish to a different workflow, breaks
 # authentication until the trusted publisher is updated to match.
+#
+# Running this manually (workflow_dispatch) on an already-published version is
+# a safe way to smoke-test OIDC without releasing anything: the registry checks
+# authentication before it checks the version, so
+#
+#   EPUBLISHCONFLICT / "cannot publish over previously published version"
+#     -> authentication worked; trusted publishing is configured correctly
+#   401 / 404 / "need auth"
+#     -> the trusted publisher does not match this repo and workflow filename
 on:
   push:
     tags: ["v*"]
@@ -55,7 +64,12 @@ jobs:
 
       # Refuse to publish a tag that disagrees with package.json, rather than
       # shipping a version nobody can correlate with the repo.
+      #
+      # Only meaningful for a tag push. On workflow_dispatch GITHUB_REF_NAME is
+      # the branch name, so this would compare "main" against the version and
+      # fail every manual run before it reached the publish step.
       - name: Verify tag matches package version
+        if: github.ref_type == 'tag'
         run: |
           set -euo pipefail
           tag="${GITHUB_REF_NAME#v}"
