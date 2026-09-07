@@ -72,3 +72,25 @@ jobs:
       # not after.
       - name: Verify publishable package
         run: npm pack --dry-run
+
+  docs:
+    name: docs build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      # The docs site is its own npm project; a broken link in the sidebar or a
+      # bad frontmatter field fails the build, so this catches doc rot before
+      # Cloudflare does.
+      - run: npm ci
+        working-directory: docs
+
+      - run: npm run build
+        working-directory: docs

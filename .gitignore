@@ -7,6 +7,9 @@ node_modules/
 dist/
 *.tsbuildinfo
 
+# astro (docs site)
+.astro/
+
 # the SDK bundle copied in by `npm run demo:sync`
 examples/demo-extension/vendor/
 

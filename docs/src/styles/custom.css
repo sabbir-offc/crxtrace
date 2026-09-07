@@ -1,0 +1,33 @@
+/* Teal accent — distinct from Starlight's default purple, and it reads as
+   "diagnostic tool" rather than "framework". */
+:root {
+  --sl-color-accent-low: #0b2e2e;
+  --sl-color-accent: #0d7a72;
+  --sl-color-accent-high: #8fd9d1;
+  --sl-color-white: #ffffff;
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #b8e6e1;
+  --sl-color-accent: #0b6b64;
+  --sl-color-accent-high: #06322e;
+}
+
+/* The docs lean on tables for option and category references. Starlight's
+   defaults let long cells collapse awkwardly on mobile, so keep them scrollable
+   rather than squeezed. */
+.sl-markdown-content table {
+  display: block;
+  overflow-x: auto;
+  white-space: normal;
+}
+
+.sl-markdown-content table code {
+  white-space: nowrap;
+}
+
+/* Terminal transcripts in the worker-death guide read better without the
+   code-block chrome fighting the ASCII. */
+.sl-markdown-content pre {
+  line-height: 1.55;
+}

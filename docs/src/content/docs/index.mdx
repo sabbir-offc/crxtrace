@@ -1,0 +1,80 @@
+---
+title: CrxTrace
+description: MV3-aware error tracking for Chrome extensions. Events survive service worker death, content script errors group by host, and track() names the task that died.
+template: splash
+hero:
+  tagline: Error tracking that understands Manifest V3. Your extension breaks on someone else's computer, on a website you don't control, and you find out from a one-star review a week later. CrxTrace tells you in an hour.
+  actions:
+    - text: Get started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/sabbir-offc/crxtrace
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, Code } from '@astrojs/starlight/components';
+
+## The problem nobody else solves
+
+An MV3 service worker is killed roughly 30 seconds after it goes idle, with no
+reliable teardown event. Anything held in memory dies with it — which is exactly
+when the interesting failures happen.
+
+Sentry's browser SDK assumes a page with a `window` and a DOM. A service worker
+has neither. So the errors you most need to see are the ones a generic tracker
+is structurally incapable of reporting.
+
+<CardGrid>
+  <Card title="Events survive worker death" icon="approve-check">
+    Every event is written to `chrome.storage.local` **before** any send is
+    attempted, and cleared only once the server acknowledges it. A worker killed
+    mid-flush loses nothing — the next boot picks the queue back up.
+  </Card>
+  <Card title="It tells you what died" icon="warning">
+    Wrap async work in `track()`. If Chrome kills the worker while it's
+    outstanding, the next boot reports the task by name — turning "my extension
+    randomly does nothing" into a line item.
+  </Card>
+  <Card title="Host grouping" icon="puzzle">
+    Content script errors carry the page host, so a selector that breaks when a
+    site redesigns is **one issue on one host** — not noise scattered across
+    every install.
+  </Card>
+  <Card title="Other sites' bugs stay out" icon="shield">
+    A content script shares the page's `window`, so `window.onerror` also fires
+    for the host site's own errors. Only events with a frame inside your bundle
+    are reported. Their stack traces never reach your server.
+  </Card>
+</CardGrid>
+
+## Install
+
+<Code code="npm install crxtrace" lang="bash" />
+
+<Code
+  code={`import * as CrxTrace from "crxtrace";
+
+CrxTrace.init({ dsn: "https://your-ingest-endpoint/pk_live_..." });
+
+// Name the work, so a worker death can be blamed on it
+const transcript = await CrxTrace.track("fetchTranscript", getTranscript(id));`}
+  lang="js"
+  title="background.js"
+/>
+
+That's the whole setup. The same `init()` call goes in your service worker,
+your content scripts, and any extension page — the SDK detects which surface
+it's in and routes accordingly.
+
+## Yours to run
+
+The SDK is MIT licensed and complete. No feature flags, no phoning home, no
+crippled self-hosted mode.
+
+The `dsn` is just an HTTPS endpoint that receives a JSON envelope and answers
+`2xx`. That format is [documented as a contract](/reference/envelope/), and a
+working receiver ships in the repo. Point it at your own backend and it will
+not break under you.

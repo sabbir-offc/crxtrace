@@ -9,6 +9,11 @@
 [![license](https://img.shields.io/npm/l/crxtrace?color=0b7285)](LICENSE)
 [![bundle](https://img.shields.io/bundlephobia/minzip/crxtrace?color=0b7285)](https://bundlephobia.com/package/crxtrace)
 
+**[Documentation](https://crxtrace.dev)** ·
+[Getting started](https://crxtrace.dev/getting-started/) ·
+[API reference](https://crxtrace.dev/reference/api/) ·
+[Self-hosting](https://crxtrace.dev/reference/self-hosting/)
+
 </div>
 
 Your extension breaks on someone else's computer, on a website you don't
