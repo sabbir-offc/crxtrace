@@ -11,7 +11,35 @@ or removing one is major.
 
 ## [Unreleased]
 
-## [0.1.0] — Unreleased
+## [0.2.0] — 2026-09-08
+
+### Added
+
+- **Source map support.** Minified stack frames can now be resolved back to
+  original source, server-side.
+  - New optional `debugId` option on `init()`, identifying the exact build.
+    A build id rather than a version, because rebuilding the same version
+    produces different minified output — `release` alone cannot identify which
+    map belongs to a frame.
+  - `debugId` is carried on the envelope, and survives the durable queue, so an
+    event stranded by a worker death is still resolvable on a later boot.
+  - New `crxtrace sourcemaps upload` CLI, shipped with the package and
+    dependency-free. Walks a directory, uploads every `.map` file keyed by
+    debug id, warns when a map has no `sourcesContent`, and exits non-zero on
+    failure so a release with missing maps fails CI.
+  - The upload contract is documented alongside the envelope format, so a
+    self-hosted backend can implement it without reading the SDK source.
+
+Resolution itself is the server's job — source maps are never shipped to the
+browser, which would expose your original source to anyone who unpacks the
+extension.
+
+### Changed
+
+- `Envelope` gains an optional `debugId` field. Additive: existing receivers
+  are unaffected, and the field is omitted entirely when no debug id is set.
+
+## [0.1.0] — 2026-09-08
 
 Initial public release.
 
@@ -60,5 +88,6 @@ Initial public release.
 - **Reference ingest server** in `examples/ingest-server.mjs` and a demo
   extension exercising each failure mode.
 
-[Unreleased]: https://github.com/sabbir-offc/crxtrace/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/sabbir-offc/crxtrace/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/sabbir-offc/crxtrace/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/sabbir-offc/crxtrace/releases/tag/v0.1.0

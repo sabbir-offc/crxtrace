@@ -32,6 +32,7 @@ interface Envelope {
   sentAt: number;                 // epoch ms
   installId: string;              // random, per-install
   release?: string;
+  debugId?: string;               // build id, for source map lookup (0.2.0+)
   environment: string;            // "production" | "development" | custom
   extension: ExtensionInfo;
   runtime: RuntimeInfo;
@@ -59,6 +60,12 @@ interface RuntimeInfo {
 
 All three arrays may be empty, and an envelope with only `lifecycle` entries is
 normal — that's a worker reporting a clean boot.
+
+`debugId` is present only when the extension passed one to `init()`. It
+identifies the exact build, and is how a server selects the source maps to
+resolve this envelope's stack frames — see [Source maps](/guides/source-maps/).
+Absent means "this build has no uploaded maps", which is different from an
+empty string.
 
 ## CrxEvent
 

@@ -39,6 +39,7 @@ export default defineConfig({
           items: [
             { label: "Service worker deaths", slug: "guides/worker-deaths" },
             { label: "Content scripts", slug: "guides/content-scripts" },
+            { label: "Source maps", slug: "guides/source-maps" },
             { label: "MV3 error categories", slug: "guides/error-categories" },
             { label: "Privacy and redaction", slug: "guides/privacy" },
             { label: "Filtering events", slug: "guides/filtering" },

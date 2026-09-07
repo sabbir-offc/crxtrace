@@ -130,6 +130,59 @@ SDK sees the response, and the same batch arrives again on the next boot.
 `eventId` is unique per event. Make your writes idempotent on it, with a unique
 index rather than a read-then-write check.
 
+## Source maps
+
+To resolve minified frames you need a second endpoint. The CLI that ships with
+the SDK posts one request per map file:
+
+```http
+POST <dsn>/sourcemaps
+content-type: application/json
+
+{
+  "debugId": "018f2a1e-9c4d-7bb2-a1f4-2b6d9e0c1a33",
+  "release": "1.4.2",
+  "file": "background.js",
+  "map": { /* the parsed source map */ }
+}
+```
+
+Store keyed by `(project, debugId, file)` and answer `2xx`. Maps are large —
+a few hundred KB each is normal — so put them in object storage rather than a
+row in your events table, and cap the request body generously (10 MB is a
+reasonable ceiling).
+
+Resolve at **display** time, not ingest time. Maps are frequently uploaded
+seconds after the first events from a new build arrive, and an event resolved
+at ingest against a missing map stays minified forever. Resolving lazily means
+a map uploaded later fixes every event that came before it.
+
+```js
+import { TraceMap, originalPositionFor } from "@jridgewell/trace-mapping";
+
+function resolveFrame(frame, rawMap) {
+  const traced = originalPositionFor(new TraceMap(rawMap), {
+    line: frame.line,
+    column: frame.column,
+  });
+  if (!traced.source) return frame;
+  return {
+    ...frame,
+    file: traced.source,
+    line: traced.line ?? frame.line,
+    column: traced.column ?? frame.column,
+    function: traced.name ?? frame.function,
+  };
+}
+```
+
+Strip the `app:///` prefix from `frame.file` before looking up the map — the
+CLI records maps under the plain path (`background.js`), while frames carry the
+normalized form (`app:///background.js`).
+
+Cache parsed maps in memory. Building a `TraceMap` is the expensive part, and
+one issue page resolves dozens of frames against the same map.
+
 ## Retention
 
 Raw events grow fast and age badly. A workable split:
@@ -160,6 +213,8 @@ that count becomes a lower bound.
 - [ ] Messages normalised before hashing into groups
 - [ ] `fingerprint` honoured when present
 - [ ] `terminated` with `hadPendingWork: false` ignored
+- [ ] `POST <dsn>/sourcemaps` accepts and stores maps by `(project, debugId, file)`
+- [ ] Frames resolved at display time, with parsed maps cached
 - [ ] Retention policy scheduled
 
 ## Related

@@ -86,6 +86,24 @@ than by call site — one issue instead of two hundred. The full set:
 `sw_terminated` · `storage_quota` · `permission_denied` · `script_injection` ·
 `tab_gone` · `native_host` · `csp` · `network` · `user_gesture`
 
+### Minified stacks resolve to your source
+
+Ship a bundled extension and every stack reads `at t (app:///background.js:1:45231)`.
+Give your build a debug ID, upload the maps, and it becomes
+`at syncBookmarks (src/sync/bookmarks.ts:42:18)`.
+
+```js
+CrxTrace.init({ dsn: "...", debugId: __DEBUG_ID__ });
+```
+
+```bash
+npx crxtrace sourcemaps upload --dsn "$DSN" --debug-id "$DEBUG_ID" ./dist
+```
+
+Resolution happens server-side — maps are never shipped to the browser, so your
+source doesn't travel inside a package anyone can unzip. Full setup in the
+[source maps guide](https://crxtrace.dev/guides/source-maps/).
+
 ### Your extension id is normalized away
 
 `chrome-extension://<id>/sw.js` becomes `app:///sw.js`, so one bug is one issue

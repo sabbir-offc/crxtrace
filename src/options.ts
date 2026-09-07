@@ -25,6 +25,10 @@ export function resolveOptions(options: CrxTraceOptions): ResolvedOptions {
   return {
     dsn: options.dsn.replace(/\/+$/, ""),
     release: options.release ?? manifest.version,
+    // No default. An absent debugId means "this build has no uploaded maps",
+    // which is different from guessing one and having the server look for maps
+    // that were never uploaded.
+    debugId: options.debugId,
     environment:
       options.environment ?? (looksUnpacked() ? "development" : "production"),
     surface: options.surface ?? detectSurface(),

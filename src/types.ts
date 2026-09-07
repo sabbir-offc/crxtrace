@@ -1,5 +1,5 @@
 export const SDK_NAME = "crxtrace-js";
-export const SDK_VERSION = "0.1.0";
+export const SDK_VERSION = "0.2.0";
 
 /** Where in the extension the event came from. */
 export type Surface =
@@ -153,6 +153,11 @@ export interface Envelope {
   sentAt: number;
   installId: string;
   release?: string;
+  /**
+   * The build these events came from, when `debugId` was passed to `init()`.
+   * Servers use it to select the source maps uploaded for this exact build.
+   */
+  debugId?: string;
   environment: string;
   extension: ExtensionInfo;
   runtime: RuntimeInfo;
@@ -181,6 +186,28 @@ export interface CrxTraceOptions {
   dsn: string;
   /** Defaults to the version in your manifest. */
   release?: string;
+  /**
+   * Identifies the exact build these events came from, so the server can find
+   * the matching source maps and resolve minified stack frames.
+   *
+   * Inject it at build time and upload the maps under the same id:
+   *
+   * ```js
+   * // build script
+   * const debugId = crypto.randomUUID();
+   * // esbuild/tsup:  define: { __DEBUG_ID__: JSON.stringify(debugId) }
+   * CrxTrace.init({ dsn, debugId: __DEBUG_ID__ });
+   * ```
+   *
+   * ```bash
+   * npx crxtrace sourcemaps upload --dsn "$DSN" --debug-id "$DEBUG_ID" ./dist
+   * ```
+   *
+   * A build id rather than a version: rebuilding the same version produces
+   * different minified output, so `release` alone cannot identify which map
+   * belongs to a frame.
+   */
+  debugId?: string;
   /** Defaults to "production", or "development" for unpacked installs. */
   environment?: string;
   /** Auto-detected. Only set this if detection guesses wrong. */
@@ -220,10 +247,18 @@ export interface CrxTraceOptions {
 export interface ResolvedOptions extends Required<
   Omit<
     CrxTraceOptions,
-    "beforeSend" | "release" | "surface" | "allowHosts" | "denyHosts" | "ignoreErrors" | "scrub"
+    | "beforeSend"
+    | "release"
+    | "debugId"
+    | "surface"
+    | "allowHosts"
+    | "denyHosts"
+    | "ignoreErrors"
+    | "scrub"
   >
 > {
   release?: string;
+  debugId?: string;
   surface: Surface;
   allowHosts: (string | RegExp)[];
   denyHosts: (string | RegExp)[];

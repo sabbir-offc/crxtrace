@@ -20,9 +20,9 @@ decide honestly.
 | Content script grouping | By stack trace | By page host |
 | MV3 error families | One issue per call site | Grouped by cause |
 | Extension id in stacks | Splits one bug per install | Normalized to `app:///` |
+| Source maps | Yes | Yes — debug IDs + upload CLI |
 | Performance tracing, profiling, replay | Yes | No |
-| Source maps | Yes | Not yet |
-| Ecosystem, integrations, maturity | Vast | One library, v0.1 |
+| Ecosystem, integrations, maturity | Vast | One library, v0.2 |
 
 If you need performance monitoring or session replay, Sentry is the answer and
 CrxTrace isn't trying to be. If you need to know why your worker keeps dying,
@@ -89,12 +89,17 @@ Sentry.init({
 
 Said plainly:
 
-- **No source maps yet.** A minified bundle reports minified frames. If you ship
-  minified extension code, this will hurt — it's the top item on the roadmap.
-- **No performance monitoring.** Errors only.
-- **v0.1.** Young, small, and maintained by one person. The wire format is
+- **No performance monitoring.** No tracing, no profiling, no session replay.
+  Errors only, and that isn't changing soon.
+- **No integrations ecosystem.** Auto-instrumentation is on or off, not
+  pluggable. No Slack app, no Jira sync, no issue-owner routing.
+- **v0.2.** Young, small, and maintained by one person. The wire format is
   stable and documented, and the SDK is MIT with no lock-in, so the downside is
   bounded — but it isn't Sentry's maturity and won't be for a long time.
+
+Source maps used to be on this list. They're supported as of 0.2.0 — see
+[Source maps](/guides/source-maps/) — though setup is a build-time debug ID
+plus an upload step, rather than Sentry's bundler plugins doing it for you.
 
 ## What you gain
 

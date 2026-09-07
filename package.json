@@ -1,6 +1,6 @@
 {
   "name": "crxtrace",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "MV3-aware error tracking for Chrome extensions. Service worker lifecycle, content script errors by host, and release health.",
   "license": "MIT",
   "author": "sabbir-offc (https://github.com/sabbir-offc)",
@@ -25,8 +25,12 @@
     "./global": "./dist/crxtrace.global.js",
     "./package.json": "./package.json"
   },
+  "bin": {
+    "crxtrace": "./bin/crxtrace.mjs"
+  },
   "files": [
     "dist",
+    "bin",
     "README.md",
     "LICENSE"
   ],

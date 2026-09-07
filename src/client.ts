@@ -372,6 +372,7 @@ export class CrxTraceClient {
         sentAt: now(),
         installId: await this.installIdentifier(),
         release: this.options.release,
+        ...(this.options.debugId ? { debugId: this.options.debugId } : {}),
         environment: this.options.environment,
         extension: this.extensionInfo(),
         runtime: collectRuntimeInfo(),

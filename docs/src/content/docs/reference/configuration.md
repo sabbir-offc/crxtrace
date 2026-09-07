@@ -34,6 +34,29 @@ version differs from the manifest one.
 CrxTrace.init({ dsn: "...", release: "2026.9.1-canary" });
 ```
 
+### debugId
+
+Default: **none**
+
+Identifies the exact build these events came from, so the server can find the
+matching source maps and resolve minified stack frames.
+
+```js
+CrxTrace.init({ dsn: "...", debugId: __DEBUG_ID__ });
+```
+
+Inject a fresh id at build time and upload your maps under the same value:
+
+```bash
+npx crxtrace sourcemaps upload --dsn "$DSN" --debug-id "$DEBUG_ID" ./dist
+```
+
+A build id rather than a version, because rebuilding the same version produces
+different minified output — `release` alone can't identify which map belongs to
+a frame. Omit it and everything still works; you just get minified frames.
+
+See [Source maps](/guides/source-maps/).
+
 ### environment
 
 Default: **`"production"`, or `"development"` for unpacked installs**
