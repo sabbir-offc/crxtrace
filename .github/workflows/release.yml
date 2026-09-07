@@ -6,7 +6,17 @@ name: Release
 #                            # src/types.ts — test/version.test.ts enforces it
 #   git push --follow-tags
 #
-# Requires an NPM_TOKEN secret (an npm automation token) on the repository.
+# Authenticates with npm via trusted publishing (OIDC) — there is no NPM_TOKEN
+# and no stored credential of any kind. npm verifies the short-lived OIDC token
+# against the trusted publisher configured on the package:
+#
+#   npmjs.com → crxtrace → Settings → Trusted Publisher → GitHub Actions
+#     organization or user: sabbir-offc
+#     repository:           crxtrace
+#     workflow filename:    release.yml
+#
+# Renaming this file, or moving the publish to a different workflow, breaks
+# authentication until the trusted publisher is updated to match.
 on:
   push:
     tags: ["v*"]
@@ -14,8 +24,8 @@ on:
 
 permissions:
   contents: write
-  # Required for npm provenance — publishes a signed attestation linking the
-  # tarball to this workflow run and commit.
+  # Required for trusted publishing: lets this run mint the OIDC token npm
+  # exchanges for publish rights, and sign the provenance attestation.
   id-token: write
 
 jobs:
@@ -31,6 +41,15 @@ jobs:
           node-version: "22"
           registry-url: https://registry.npmjs.org
           cache: npm
+
+      # Trusted publishing needs npm >= 11.5.1. Node 22 ships npm 10.x, so the
+      # bundled version cannot authenticate and the publish fails with a
+      # confusing 404/401 rather than anything mentioning OIDC.
+      - name: Use an npm that supports trusted publishing
+        run: |
+          set -euo pipefail
+          npm install -g npm@latest
+          npm --version
 
       - run: npm ci
 
@@ -50,10 +69,11 @@ jobs:
       - run: npm test
       - run: npm run build
 
+      # No NODE_AUTH_TOKEN. Provenance is generated automatically for a public
+      # package published this way, and publishConfig.provenance keeps it
+      # explicit in package.json.
       - name: Publish
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create GitHub release
         env:
