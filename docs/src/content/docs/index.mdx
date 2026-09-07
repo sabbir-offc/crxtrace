@@ -14,6 +14,10 @@ hero:
       link: /getting-started/
       icon: right-arrow
       variant: primary
+    - text: Get a DSN
+      link: https://app.crxtrace.dev
+      icon: external
+      variant: secondary
     - text: View on GitHub
       link: https://github.com/sabbir-offc/crxtrace
       icon: external
@@ -74,12 +78,32 @@ That's the whole setup. The same `init()` call goes in your service worker,
 your content scripts, and any extension page — the SDK detects which surface
 it's in and routes accordingly.
 
+## Where your events go
+
+The `dsn` is just an HTTPS endpoint. You have two ways to get one, and the SDK
+does not care which you pick.
+
+<CardGrid>
+  <Card title="Use the hosted dashboard" icon="rocket">
+    Sign up at **[app.crxtrace.dev](https://app.crxtrace.dev)**, create a
+    project, and paste the DSN it gives you. It does the server-side work —
+    grouping by cause, worker-death issues, release health, and resolving
+    minified frames from your uploaded source maps.
+  </Card>
+  <Card title="Run your own" icon="setting">
+    The envelope format is
+    [documented as a contract](/reference/envelope/) and every type is exported
+    from the package. A working receiver in ~150 lines of dependency-free Node
+    ships in the repo. See [self-hosting](/reference/self-hosting/).
+  </Card>
+</CardGrid>
+
 ## Yours to run
 
 The SDK is MIT licensed and complete. No feature flags, no phoning home, no
-crippled self-hosted mode.
+crippled self-hosted mode — the hosted dashboard is a convenience, not a
+dependency.
 
-The `dsn` is just an HTTPS endpoint that receives a JSON envelope and answers
-`2xx`. That format is [documented as a contract](/reference/envelope/), and a
-working receiver ships in the repo. Point it at your own backend and it will
-not break under you.
+That matters more than it sounds. An error tracker you cannot run yourself is a
+place your production diagnostics can be taken away from you. Point CrxTrace at
+your own backend and the contract above will not break under you.

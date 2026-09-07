@@ -34,6 +34,13 @@ That's the whole setup. Call the same `init()` in your service worker, your
 content scripts, and any extension page — the SDK detects which surface it's in
 and routes accordingly.
 
+**Where does the DSN come from?** Either sign up for the hosted dashboard at
+**[app.crxtrace.dev](https://app.crxtrace.dev)**, or
+[run your own backend](https://crxtrace.dev/reference/self-hosting/) — the
+envelope format is a documented contract and a working receiver ships in
+[`examples/`](examples/ingest-server.mjs). The SDK behaves identically either
+way.
+
 ---
 
 ## Why generic trackers don't work here
